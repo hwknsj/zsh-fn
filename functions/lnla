@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
-# lnla.zsh
+# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim: ft=zsh sw=2 ts=2 et
+builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
+builtin setopt extended_glob local_options typeset_silent no_short_loops rc_quotes no_auto_pushd
 
 # Create symlinks from source directory to target directory
 function lnla() {
@@ -22,10 +25,8 @@ Options:
         echo "$USAGE"
         return 0
     fi
-
     local ln_opts=(-s)  # default is symbolic link
     local args=()
-
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -*)
@@ -46,7 +47,6 @@ Options:
         echo "$USAGE"
         return 1
     fi
-
     local src="${args[1]}"
     local target="${args[2]}"
     local filter="${args[3]:-$src/*}"  # default all files in src dir
@@ -55,19 +55,16 @@ Options:
         echo "Error: Source directory '$src' does not exist."
         return 1
     fi
-
     if [[ ! -d "$target" ]]; then
         echo "Creating target directory: $target"
         mkdir -p "$target"
     fi
-
     local file_count=0
     for file in $filter; do
         if [[ -f "$file" ]]; then
             ((file_count++))
         fi
     done
-
     if [[ $file_count -eq 0 ]]; then
         echo "No files found matching pattern: $filter"
         return 0
@@ -115,12 +112,12 @@ _lnla() {
                 break
             fi
         done
-        
+
         if [[ -n "$src" && -d "$src" ]]; then
             _files -W "$src" && ret=0
         fi
     fi
-    
+
     return ret
 }
 
